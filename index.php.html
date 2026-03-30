@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evidencia GA1096 - API de Servicios Web</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px; background-color: #f0f2f5; }
+        .container { display: flex; gap: 25px; flex-wrap: wrap; justify-content: center; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 320px; border-top: 5px solid #28a745; }
+        .card.login-card { border-top-color: #007bff; }
+        h2 { color: #333; margin-top: 0; font-size: 1.4em; text-align: center; }
+        label { display: block; margin-bottom: 5px; color: #666; font-size: 0.9em; }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; transition: border 0.3s; }
+        input:focus { border-color: #007bff; outline: none; }
+        button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1em; transition: 0.3s; }
+        button:hover { opacity: 0.9; transform: translateY(-1px); }
+        button.login-btn { background-color: #007bff; }
+        .result { margin-top: 15px; padding: 12px; border-radius: 6px; font-size: 0.95em; display: none; text-align: center; font-weight: 500; }
+        .success { background-color: #d4edda; color: #155724; display: block; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; display: block; border: 1px solid #f5c6cb; }
+        .footer { margin-top: 30px; color: #888; font-size: 0.85em; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <h1 style="color: #1c1e21; margin-bottom: 30px;">Servicio Web de Autenticación</h1>
+
+    <div class="container">
+        <!-- Formulario de Registro -->
+        <div class="card">
+            <h2>Registrar Usuario</h2>
+            <label>Usuario:</label>
+            <input type="text" id="reg_user" placeholder="Ej: aprendiz_sena">
+            <label>Contraseña:</label>
+            <input type="password" id="reg_pass" placeholder="••••••••">
+            <button onclick="enviar('index.php?accion=registro', 'reg')">Crear Cuenta</button>
+            <div id="reg_res" class="result"></div>
+        </div>
+
+        <!-- Formulario de Login -->
+        <div class="card login-card">
+            <h2>Iniciar Sesión</h2>
+            <label>Usuario:</label>
+            <input type="text" id="log_user" placeholder="Tu usuario">
+            <label>Contraseña:</label>
+            <input type="password" id="log_pass" placeholder="Tu contraseña">
+            <button class="login-btn" onclick="enviar('index.php?accion=login', 'log')">Acceder al Sistema</button>
+            <div id="log_res" class="result"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Evidencia: Diseño y desarrollo de servicios Web - SENA 2026
+    </div>
+
+    <script>
+        async function enviar(url, tipo) {
+            const user = document.getElementById(tipo + '_user').value;
+            const pass = document.getElementById(tipo + '_pass').value;
+            const resDiv = document.getElementById(tipo + '_res');
+
+            if(!user || !pass) {
+                resDiv.innerText = "Completa todos los campos";
+                resDiv.className = 'result error';
+                return;
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usuario: user, password: pass })
+                });
+                const data = await response.json();
+                
+                resDiv.innerText = data.mensaje;
+                resDiv.className = 'result ' + (data.exito ? 'success' : 'error');
+            } catch (err) {
+                resDiv.innerText = "Error de conexión con el servidor";
+                resDiv.className = 'result error';
+            }
+        }
+    </script>
+</body>
+</html>
+
+
